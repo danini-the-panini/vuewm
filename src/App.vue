@@ -1,6 +1,6 @@
 <template>
   <div class="screen">
-    <Desktop />
+    <Desktop @launchapp="launchApp"/>
     <Window
       v-for="(window, index) in windows"
       :key="window.id"
@@ -22,29 +22,11 @@ const windows = reactive([
   {
     id: uuid(),
     x: 50,
-    y: 50,
+    y: 100,
     width: 320,
     height: 240,
     title: 'Hello, World!',
     z: 0,
-  },
-  {
-    id: uuid(),
-    x: 100,
-    y: 100,
-    width: 320,
-    height: 240,
-    title: 'Lorem Ipsum',
-    z: 1,
-  },
-  {
-    id: uuid(),
-    x: 150,
-    y: 150,
-    width: 320,
-    height: 240,
-    title: 'Dolar sit amet',
-    z: 2,
   },
 ]);
 
@@ -61,6 +43,20 @@ function closeWindow(window) {
   windows.forEach(w => {
     if (w.z > window.z) w.z -= 1;
   });
+}
+
+function launchApp() {
+  let newWindow = {
+    id: uuid(),
+    x: 150,
+    y: 150,
+    width: 320,
+    height: 240,
+    title: 'New Window',
+    z: windows.length,
+  };
+
+  windows.push(newWindow);
 }
 </script>
 
