@@ -1,26 +1,32 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="screen">
+    <Desktop />
+    <Window v-for="window in windows" :key="window.id" v-bind="window" />
+  </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script setup>
+import { reactive } from 'vue';
+import { v4 as uuid } from 'uuid';
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+import Desktop from '@/components/Desktop.vue';
+import Window from '@/components/Window.vue';
+
+const windows = reactive([{
+  id: uuid(),
+  x: 50,
+  y: 50,
+  width: 320,
+  height: 240,
+  title: 'Hello, World!',
+}]);
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+.screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 </style>
