@@ -1,5 +1,5 @@
 <template>
-  <div class="window" :style="windowStyle" v-if="modelValue">
+  <div class="window" :style="windowStyle" v-if="modelValue" @mousedown="$emit('focuswindow', modelValue)">
     <div class="handle top" @mousedown="resizeTop"></div>
     <div class="handle right" @mousedown="resizeRight"></div>
     <div class="handle bottom" @mousedown="resizeBottom"></div>
@@ -10,6 +10,7 @@
     <div class="handle bottom-right" @mousedown="resizeBottomRight"></div>
     <div class="inner" @mousedown="moveWindow">
       <div class="blur" :style="blurStyle"></div>
+      <div class="border"></div>
       <div class="content"></div>
     </div>
   </div>
@@ -22,13 +23,14 @@ const props = defineProps({
   modelValue: Object,
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'focuswindow']);
 
 const windowStyle = computed(() => ({
   left: `${props.modelValue.x}px`,
   top: `${props.modelValue.y}px`,
   width: `${props.modelValue.width}px`,
   height: `${props.modelValue.height}px`,
+  zIndex: props.modelValue.z
 }));
 
 const blurStyle = computed(() => ({
@@ -158,6 +160,16 @@ const resizeBottomRight = doWhileDragging((dx, dy) => {
   background-image: url('../assets/wallpaper.png');
   filter: blur(16px);
   pointer-events: none;
+}
+
+.border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgb(0 0 0 / 20%);
+  border-radius: inherit;
 }
 
 .content {
