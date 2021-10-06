@@ -1,7 +1,7 @@
 <template>
   <div class="screen">
     <Desktop />
-    <Window v-for="window in windows" :key="window.id" v-bind="window" />
+    <Window v-for="(window, index) in windows" :key="window.id" v-model="windows[index]" />
   </div>
 </template>
 

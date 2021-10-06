@@ -1,26 +1,58 @@
 <template>
-  <div class="window" :style="windowStyle">
-    <div class="blur"></div>
+  <div class="window" :style="windowStyle" @mousedown="startDrag" v-if="modelValue">
+    <div class="blur" :style="blurStyle"></div>
     <div class="content"></div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue';
+import { defineProps, defineEmits, computed } from 'vue';
 
 const props = defineProps({
-  x: Number,
-  y: Number,
-  width: Number,
-  height: Number,
+  modelValue: Object,
 });
 
+const emit = defineEmits(['update:modelValue']);
+
 const windowStyle = computed(() => ({
-  left: `${props.x}px`,
-  top: `${props.y}px`,
-  width: `${props.width}px`,
-  height: `${props.height}px`,
+  left: `${props.modelValue.x}px`,
+  top: `${props.modelValue.y}px`,
+  width: `${props.modelValue.width}px`,
+  height: `${props.modelValue.height}px`,
 }));
+
+const blurStyle = computed(() => ({
+  backgroundPosition: `${-props.modelValue.x + 32}px ${-props.modelValue.y + 32}px`,
+}));
+
+let mouse = { x: null, y: null };
+
+function drag(event) {
+  let offsetX = event.pageX - mouse.x;
+  let offsetY = event.pageY - mouse.y;
+
+  mouse.x = event.pageX;
+  mouse.y = event.pageY;
+
+  emit('update:modelValue', {
+    ...props.modelValue,
+    x: props.modelValue.x + offsetX,
+    y: props.modelValue.y + offsetY,
+  });
+}
+
+function startDrag(event) {
+  mouse.x = event.pageX;
+  mouse.y = event.pageY;
+  
+  const stopDrag = () => {
+    window.removeEventListener('mousemove', drag);
+    window.removeEventListener('mouseup', stopDrag);
+  };
+
+  window.addEventListener('mousemove', drag);
+  window.addEventListener('mouseup', stopDrag);
+}
 </script>
 
 <style scoped>
