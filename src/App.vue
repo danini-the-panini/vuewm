@@ -1,7 +1,13 @@
 <template>
   <div class="screen">
     <Desktop />
-    <Window v-for="(window, index) in windows" :key="window.id" v-model="windows[index]" @focuswindow="focusWindow"/>
+    <Window
+      v-for="(window, index) in windows"
+      :key="window.id"
+      v-model="windows[index]"
+      @windowfocus="focusWindow"
+      @windowclose="closeWindow"
+    />
   </div>
 </template>
 
@@ -48,6 +54,13 @@ function focusWindow(window) {
     if (w.z >= oldZ) w.z -= 1;
   });
   window.z = windows.length - 1;
+}
+
+function closeWindow(window) {
+  windows.splice(windows.indexOf(window), 1);
+  windows.forEach(w => {
+    if (w.z > window.z) w.z -= 1;
+  });
 }
 </script>
 

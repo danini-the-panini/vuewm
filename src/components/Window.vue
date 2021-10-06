@@ -1,5 +1,5 @@
 <template>
-  <div class="window" :style="windowStyle" v-if="modelValue" @mousedown="$emit('focuswindow', modelValue)">
+  <div class="window" :style="windowStyle" v-if="modelValue" @mousedown="$emit('windowfocus', modelValue)">
     <div class="handle top" @mousedown="resizeTop"></div>
     <div class="handle right" @mousedown="resizeRight"></div>
     <div class="handle bottom" @mousedown="resizeBottom"></div>
@@ -11,7 +11,12 @@
     <div class="inner" @mousedown="moveWindow">
       <div class="blur" :style="blurStyle"></div>
       <div class="border"></div>
-      <div class="content"></div>
+      <div class="content">
+        <div class="title-bar">
+          <button class="close-button" @click="$emit('windowclose', modelValue)"></button>
+          <span class="title">{{modelValue.title}}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -23,7 +28,7 @@ const props = defineProps({
   modelValue: Object,
 });
 
-const emit = defineEmits(['update:modelValue', 'focuswindow']);
+const emit = defineEmits(['update:modelValue', 'windowfocus', 'windowclose']);
 
 const windowStyle = computed(() => ({
   left: `${props.modelValue.x}px`,
@@ -245,5 +250,28 @@ const resizeBottomRight = doWhileDragging((dx, dy) => {
   width: 16px;
   height: 16px;
   cursor: nwse-resize;
+}
+
+.title-bar {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
+.close-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgb(0 0 0 / 40%);
+  background-color: transparent;
+}
+.close-button:hover {
+  background-color: rgba(255 0 0 / 60%);
+}
+
+.title {
+  margin: 0 auto;
+  user-select: none;
 }
 </style>
